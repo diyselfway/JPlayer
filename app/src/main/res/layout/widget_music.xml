@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+                android:background="#7dffffff"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+
+    <ImageView
+        android:id="@+id/image_widget_cover"
+        android:src="@drawable/cover"
+        android:background="#00ffffff"
+        android:layout_width="82dp"
+        android:layout_height="82dp"/>
+    <TextView
+        android:id="@+id/text_widget_song_name"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/image_widget_cover"
+        android:layout_marginLeft="30dp"
+        android:background="#00ffffff"
+        android:text="Music Player"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_width="200dp"
+        android:layout_height="26dp"/>
+    <ImageButton
+        android:id="@+id/image_button_widget_previous"
+        android:layout_toRightOf="@id/image_widget_cover"
+        android:layout_marginLeft="30dp"
+        android:layout_below="@id/text_widget_song_name"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="#00ffffff"
+        android:src="@drawable/skip_previous"/>
+    <ImageView
+        android:id="@+id/image_button_widget_play"
+        android:layout_toRightOf="@id/image_button_widget_previous"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@id/text_widget_song_name"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="#00ffffff"
+        android:src="@drawable/play"/>
+    <ImageButton
+        android:id="@+id/image_button_widget_next"
+        android:layout_toRightOf="@id/image_button_widget_play"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@id/text_widget_song_name"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="#00ffffff"
+        android:src="@drawable/skip_next"/>
+
+
+
+
+</RelativeLayout>

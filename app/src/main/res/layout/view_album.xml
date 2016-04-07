@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/album_iamge_cover"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/album"/>
+
+    <TextView
+        android:id="@+id/album_text_cover"
+        android:layout_width="170dp"
+        android:layout_height="170dp"
+        android:background="#3e6ac7"
+        android:gravity="center"
+        android:text="歌"
+        android:textColor="@android:color/white"
+        android:textSize="80sp"
+        android:visibility="invisible"/>
+
+    <LinearLayout
+        android:id="@+id/album_info"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/album_iamge_cover"
+        android:background="#656e6d"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/album_text_name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="专辑信息"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/album_text_singername"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="歌手信息"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

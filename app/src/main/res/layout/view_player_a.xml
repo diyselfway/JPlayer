@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/text_songName_palyer_a"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:text="为你钟情"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:textColor="@color/material_black"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:id="@+id/text_singerName_palyer_a"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_songName_palyer_a"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="张国荣"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/text_albumInfo_player_a"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_singerName_palyer_a"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:text="莫妮卡 • 2003"
+        android:textSize="16sp"/>
+
+</RelativeLayout>

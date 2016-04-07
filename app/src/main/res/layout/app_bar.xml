@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.julian.qplayer.ListActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+
+        <!--app:tabMode="fixed"-->
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"/>
+
+        <RelativeLayout
+            android:id="@+id/controlBar"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            android:background="@color/windowBackGroud"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <ImageView
+                android:id="@+id/image_album_controlBar"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"/>
+
+            <ProgressBar
+                android:id="@+id/progressBar_controlBar"
+                android:layout_toEndOf="@id/image_album_controlBar"
+                android:layout_width="match_parent"
+                style="@android:style/Widget.Material.Light.ProgressBar.Horizontal"
+                android:max="100"
+                android:progress="10"
+                android:progressTint="@color/colorAccent"
+                android:layout_height="3dp"/>
+
+            <TextView
+                android:id="@+id/text_songName_control"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/image_album_controlBar"
+                android:layout_below="@id/progressBar_controlBar"
+                android:text="花心"
+                android:textSize="16sp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:textColor="@color/material_black"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/text_singerName_control"
+                android:layout_toEndOf="@id/image_album_controlBar"
+                android:layout_below="@id/text_songName_control"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:text="周华健"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"/>
+
+            <ImageButton
+                android:id="@+id/playButton_controlBar"
+                android:layout_alignParentEnd="true"
+                android:background="#00000000"
+                android:src="@drawable/play"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+
+    <ImageView
+        android:id="@+id/album_iamge_cover_artist"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginRight="16dp"
+        android:background="@color/windowBackGroud"/>
+
+    <TextView
+        android:id="@+id/album_text_cover_artist"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:gravity="center"
+        android:text="歌"
+        android:visibility="invisible"
+        android:textSize="35sp"/>
+
+
+    <TextView
+        android:id="@+id/album_text_name_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_toRightOf="@id/album_iamge_cover_artist"
+        android:text="专辑名"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textColor="@color/material_black"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:id="@+id/album_text_year_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/album_text_name_artist"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/album_iamge_cover_artist"
+        android:text="2007年"
+        android:textSize="14sp"/>
+    <TextView
+        android:id="@+id/album_text_count_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/album_text_year_artist"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/album_iamge_cover_artist"
+        android:text="3首 • 共15分钟"
+        android:textSize="14sp"/>
+
+
+</RelativeLayout>
