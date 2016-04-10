@@ -1,5 +1,6 @@
 ## JPlayer 
 >一个Material Design 风格的 Android 音乐播放器
+
 ### 整体效果
 >![demo](http://7xlo4n.com1.z0.glb.clouddn.com/demo_JPlayer.gif)
 
