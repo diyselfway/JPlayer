@@ -30,7 +30,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.julian.qplayer.ListActivity;
 import com.julian.qplayer.Music;
 import com.julian.qplayer.MusicDB;
 import com.julian.qplayer.MusicService;
@@ -53,7 +52,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 
     public static final String UPDATE_WIDGET = "com.julian.musicplayer.UPDATE_WIDGET";
     public static final int PROGRESS = 1;
-    public static final String TAG = "PlayerActivity";
+    public static final String TAG = "A_PlayerActivity";
     private int mCurrentPosition = 0;
     private int currentSongId = 1;
     private PlayButton mPlayButton;
@@ -67,6 +66,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     private ViewPager mViewPager;
     private TextView mTextProgressTime;
     private TextView mTextTotalTime;
+    private boolean isFirstTime = true;
 
 
     private Handler mHandler = new MyHandler();
@@ -80,7 +80,8 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player_a);
-        mPlayer = ListActivity.mPlayer;
+        mPlayer = MusicService.getPlayer();
+//        mPlayer = MyApplication.mPlayer;
         findViews();
         setListeners();
         setSupportActionBar(mToolbar);
@@ -99,7 +100,9 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 //        mCollapsingToolbarLayout.setExpandedTitleColor(Color.argb(0, 128, 128, 128));
         setAlbumImage(currentSong);
         mViewPager.setAdapter(new FragmentStatePagerAdapter_A(getSupportFragmentManager(), mPlaylist));
+        Log.d(TAG, "1");
         mViewPager.setCurrentItem(mCurrentPosition);
+        Log.d(TAG, "2");
         mPlaylistView.setAdapter(new PlaylistAdapter_A(this, mPlaylist));
         mPlaylistView.setNestedScrollingEnabled(true);
         mPlaylistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -108,15 +111,38 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
                 mCurrentPosition = position;
                 currentSongId = mPlaylist.get(position);
                 updateDate(currentSongId);
+                Log.d(TAG, "mPlaylistView");
                 play();
             }
         });
 
 //        initWidget();
 //        updateDate(currentSongId);
-        play();
+//        play();
+        continuePlay();
 
 //        initLrc(currentSong);
+    }
+
+    private void continuePlay() {
+        Log.d(TAG,"continuePlay");
+//        mPlayer.reset();
+//        try {
+//            mPlayer.setDataSource(mMusics.get(currentSongId-1).getPath());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            mPlayer.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        mSeekBar.setMax(mPlayer.getDuration());
+//        mPlayer.start();
+        mPlayButton.setIsPlaying(true);
+        mHandler.sendEmptyMessage(PROGRESS);
+//        updateWidget();
+
     }
 
 //    private void initLrc(Music currentSong) {
@@ -144,18 +170,19 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void handleMessage(Message msg) {
 //            A_PlayerActivity activity = mPlayerActivityWeakReference.get();
-            MediaPlayer player = ListActivity.mPlayer;
+//            MediaPlayer player = MusicService.getPlayer();
+//            MediaPlayer player = MyApplication.mPlayer;
 //            SeekBar seekBar = activity.mSeekBar;
-            SeekBar seekBar = mSeekBar;
-            TextView textProgressTime =mTextProgressTime;
+//            SeekBar seekBar = mSeekBar;
+//            TextView textProgressTime =mTextProgressTime;
             Handler handler = mHandler;
             switch (msg.what){
                 //更新播放进度条
                 case PROGRESS:
-                    if (player != null) {
+                    if (mPlayer != null) {
                         try {
-                            seekBar.setProgress(player.getCurrentPosition());
-                            int total = player.getCurrentPosition();
+                            mSeekBar.setProgress(mPlayer.getCurrentPosition());
+                            int total = mPlayer.getCurrentPosition();
                             int m = total/1000/60;
                             String mm = m + "";
                             if (m < 10){
@@ -166,14 +193,14 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
                             if (s<10) {
                                 ss = "0"+ s;
                             }
-                            textProgressTime.setText(mm + ":" + ss);
+                            mTextProgressTime.setText(mm + ":" + ss);
 //                            if (mLrcInfo.getLrcs().get((long)(player.getCurrentPosition())/10*10)){
 //                                mCollapsingToolbarLayout.setTitle(mLrcInfo.getInfos().get((long)(player.getCurrentPosition())/10*10));
 //                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        handler.sendEmptyMessageDelayed(PROGRESS,10);
+                        handler.sendEmptyMessageDelayed(PROGRESS,1000);
                     }
                     break;
             }
@@ -283,6 +310,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
                     currentSongId = mPlaylist.get(mCurrentPosition);
                 } else currentSongId = mPlaylist.get(0);
                 updateDate(currentSongId);
+                Log.d(TAG, "mPlayer");
                 play();
             }
         });
@@ -317,7 +345,10 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
                 currentSongId = mPlaylist.get(position);
                 setAlbumImage(currentSong);
 //                initLrc(currentSong);
-                play();
+                Log.d(TAG, "onPageSelected");
+                if(isFirstTime){
+                    isFirstTime = false;
+                }else play();
             }
 
             @Override
@@ -359,6 +390,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void play() {
+        Log.d(TAG,"play");
         mPlayer.reset();
         try {
             mPlayer.setDataSource(mMusics.get(currentSongId-1).getPath());
@@ -399,6 +431,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
             currentSongId = mPlaylist.get(mCurrentPosition);
         }
         updateDate(currentSongId);
+        Log.d(TAG, "lastSong");
         play();
     }
     public void nextSong(){
@@ -410,6 +443,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
             currentSongId = mPlaylist.get(mCurrentPosition);
         }
         updateDate(currentSongId);
+        Log.d(TAG, "nextSong");
         play();
     }
 
@@ -430,9 +464,9 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
             ss = "0"+ s;
         }
         mTextTotalTime.setText(mm + ":" + ss);
-        if (currentSong.hasLrc()){
-            mAlbumImageMask.setVisibility(View.VISIBLE);
-        }else mAlbumImageMask.setVisibility(View.INVISIBLE);
+//        if (currentSong.hasLrc()){
+//            mAlbumImageMask.setVisibility(View.VISIBLE);
+//        }else mAlbumImageMask.setVisibility(View.INVISIBLE);
 //        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 //        mmr.setDataSource(mMusics.get(currentSongId-1).getPath());
 //        if (currentSong.hasCover()){
@@ -445,10 +479,10 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 
     public void changeState(){
         Log.d(TAG, "mPlayer is null:" + (mPlayer == null));
-        if(mPlayer == null){
-            Intent intent = new Intent(A_PlayerActivity.this,MusicService.class);
-            startService(intent);
-        }
+//        if(mPlayer == null){
+//            Intent intent = new Intent(A_PlayerActivity.this,MusicService.class);
+//            startService(intent);
+//        }
         if (mPlayer.isPlaying()) {
             mPlayer.pause();
         } else {

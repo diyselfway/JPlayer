@@ -93,7 +93,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_player);
 
         mMusics = MusicDB.getInstance(this).getMusics();
-        mPlayer = ListActivity.mPlayer;
+        mPlayer = MyApplication.mPlayer;
+        Log.d(TAG, "is mPlayer null :" + (mPlayer == null));
         mPlaylist = getIntent().getIntegerArrayListExtra("playlist");
         mCurrentPosition = getIntent().getIntExtra("current_position", 0);
         currentSongId = mPlaylist.get(mCurrentPosition);

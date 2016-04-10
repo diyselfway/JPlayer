@@ -45,6 +45,7 @@
             android:layout_height="0dp"/>
 
         <RelativeLayout
+            android:visibility="gone"
             android:id="@+id/controlBar"
             android:orientation="horizontal"
             android:layout_gravity="bottom"
@@ -62,8 +63,6 @@
                 android:layout_toEndOf="@id/image_album_controlBar"
                 android:layout_width="match_parent"
                 style="@android:style/Widget.Material.Light.ProgressBar.Horizontal"
-                android:max="100"
-                android:progress="10"
                 android:progressTint="@color/colorAccent"
                 android:layout_height="3dp"/>
 

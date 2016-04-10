@@ -14,7 +14,7 @@ import android.widget.Toast;
  */
 public class MusicService extends Service {
     public static final String TAG = "MusicService";
-    private MediaPlayer mPlayer;
+    private static MediaPlayer mPlayer;
     private String path;
 
     @Nullable
@@ -112,7 +112,7 @@ public class MusicService extends Service {
         Toast.makeText(this, string ,Toast.LENGTH_SHORT).show();
     }
 
-    public MediaPlayer getPlayer()  {
+    public static MediaPlayer getPlayer()  {
         Log.d(TAG,"getPlayer");
         return mPlayer;
     }

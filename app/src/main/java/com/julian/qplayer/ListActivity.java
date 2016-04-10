@@ -1,12 +1,7 @@
 package com.julian.qplayer;
 
-import android.content.ComponentName;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -16,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,9 +20,9 @@ public class ListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 //    public static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
-    public static final String TAG = "ListActivity";
-    public static MediaPlayer mPlayer;
-    private MusicService mMusicService;
+//    public static final String TAG = "ListActivity";
+//    public static MediaPlayer mPlayer;
+//    private MusicService mMusicService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,34 +48,34 @@ public class ListActivity extends AppCompatActivity
 //            Tools.requestPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE, this, REQUEST_READ_EXTERNAL_STORAGE);
 //        }
 //        MusicDB musicDB = MusicDB.getInstance(getApplicationContext());
-        bindMusicService();
+//        bindMusicService();
         initWidget();
     }
 
-    private void bindMusicService() {
-        Log.d(TAG, "bindMusicService");
-        //绑定音乐服务
-        ServiceConnection serviceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                MusicService.LocalBinder localBinder = (MusicService.LocalBinder) iBinder;
-                mMusicService = localBinder.getService();
-                mPlayer = mMusicService.getPlayer();
-                Log.d(TAG, "onServiceConnected");
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-
-            }
-        };
-        Intent intent_bind_service = new Intent(ListActivity.this, MusicService.class);
-        bindService(intent_bind_service, serviceConnection, BIND_AUTO_CREATE);
-        Log.d(TAG, "bindService");
-        Intent intent_start_service = new Intent(ListActivity.this, MusicService.class);
-        startService(intent_start_service);
-        Log.d(TAG, "startService");
-    }
+//    private void bindMusicService() {
+//        Log.d(TAG, "bindMusicService");
+//        //绑定音乐服务
+//        ServiceConnection serviceConnection = new ServiceConnection() {
+//            @Override
+//            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+//                MusicService.LocalBinder localBinder = (MusicService.LocalBinder) iBinder;
+//                mMusicService = localBinder.getService();
+//                mPlayer = mMusicService.getPlayer();
+//                Log.d(TAG, "onServiceConnected");
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName componentName) {
+//
+//            }
+//        };
+//        Intent intent_bind_service = new Intent(ListActivity.this, MusicService.class);
+//        bindService(intent_bind_service, serviceConnection, BIND_AUTO_CREATE);
+//        Log.d(TAG, "bindService");
+//        Intent intent_start_service = new Intent(ListActivity.this, MusicService.class);
+//        startService(intent_start_service);
+//        Log.d(TAG, "startService");
+//    }
 
     private void initWidget() {
         //桌面小插件
