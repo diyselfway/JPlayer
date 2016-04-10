@@ -14,8 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.julian.qplayer.AlbumList.AlbumListFragment;
-
 import java.util.ArrayList;
 
 public class ListActivity extends AppCompatActivity

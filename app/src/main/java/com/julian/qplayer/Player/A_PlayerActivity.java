@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -100,7 +101,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
         final Music currentSong = mMusics.get(currentSongId - 1);
         mCollapsingToolbarLayout.setTitle(currentSong.getName());
         mCollapsingToolbarLayout.setExpandedTitleTextAppearance(R.style.ExpandedCollapsingToolbarLayout);
-//        mCollapsingToolbarLayout.setExpandedTitleColor(Color.argb(0, 128, 128, 128));
+        mCollapsingToolbarLayout.setExpandedTitleColor(Color.argb(0, 128, 128, 128));
         setAlbumImage(currentSong);
         mViewPager.setAdapter(new FragmentStatePagerAdapter_A(getSupportFragmentManager(), mPlaylist));
         Log.d(TAG, "1");
