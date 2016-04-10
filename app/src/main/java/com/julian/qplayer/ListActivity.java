@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.julian.qplayer.AlbumList.AlbumListFragment;
+
 import java.util.ArrayList;
 
 public class ListActivity extends AppCompatActivity
@@ -33,7 +35,8 @@ public class ListActivity extends AppCompatActivity
         ArrayList<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(new SongListFragment());
         fragmentList.add(new SingerGridFragment());
-        fragmentList.add(new AlbumGridFragment());
+        fragmentList.add(new AlbumListFragment());
+//        fragmentList.add(new AlbumGridFragment());
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab);
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);

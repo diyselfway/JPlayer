@@ -52,7 +52,7 @@ public class AlbumGridAdapter extends BaseAdapter {
         ViewHolder holder = null;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(mContext);
-            convertView = inflater.inflate(R.layout.view_album, null);
+            convertView = inflater.inflate(R.layout.view_album_a, null);
             holder = new ViewHolder();
             holder.imageView = (ImageView) convertView.findViewById(R.id.album_iamge_cover);
             holder.text_album = (TextView) convertView.findViewById(R.id.album_text_name);

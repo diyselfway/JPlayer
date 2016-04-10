@@ -2,6 +2,7 @@ package com.julian.qplayer.ArtistTab;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import com.julian.qplayer.Artist;
 import com.julian.qplayer.Music;
 import com.julian.qplayer.MusicDB;
+import com.julian.qplayer.MusicService;
 import com.julian.qplayer.R;
 import com.julian.qplayer.Tools;
 
@@ -27,6 +29,7 @@ import java.util.ArrayList;
  */
 public class ArtistActivity extends AppCompatActivity {
     private ArrayList<Music> mMusics;
+    private MediaPlayer mPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class ArtistActivity extends AppCompatActivity {
         Artist artist = MusicDB.getInstance(this).findArtistByName(getIntent().getStringExtra("artistName"));
         ArrayList<Integer> songlist = artist.getSonglist();
         mMusics = MusicDB.getInstance(this).getMusics();
+        mPlayer = MusicService.getPlayer();
+        mPlayer.getSelectedTrack(MediaPlayer.TrackInfo.MEDIA_TRACK_TYPE_AUDIO);
         collapsingToolbarLayout.setTitle(mMusics.get(songlist.get(0) - 1).getArtist());
 //        String picPathStr = null;
         for (int songId : songlist) {

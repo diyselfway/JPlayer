@@ -101,6 +101,7 @@ public class SongListFragment extends Fragment {
                 }
                 intent.putIntegerArrayListExtra("playlist", playlist);
                 intent.putExtra("current_position", mCurrentPosition);
+                intent.putExtra("state",A_PlayerActivity.STATE_CONTINUE);
                 startActivity(intent);
             }
         });
@@ -121,7 +122,15 @@ public class SongListFragment extends Fragment {
         summary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(), A_PlayerActivity.class);
+                ArrayList<Integer> playlist = new ArrayList<Integer>();
+                for (int i = 0; i < mMusics.size(); i++) {
+                    playlist.add(i + 1);
+                }
+                intent.putIntegerArrayListExtra("playlist", playlist);
+                intent.putExtra("current_position", 0);
+                intent.putExtra("state",A_PlayerActivity.STATE_START);
+                startActivity(intent);
             }
         });
         return view;

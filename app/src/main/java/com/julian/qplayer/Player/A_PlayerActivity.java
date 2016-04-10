@@ -53,6 +53,8 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     public static final String UPDATE_WIDGET = "com.julian.musicplayer.UPDATE_WIDGET";
     public static final int PROGRESS = 1;
     public static final String TAG = "A_PlayerActivity";
+    public static final int STATE_START = 0;
+    public static final int STATE_CONTINUE = 1;
     private int mCurrentPosition = 0;
     private int currentSongId = 1;
     private PlayButton mPlayButton;
@@ -92,6 +94,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
         mMusics = MusicDB.getInstance(this).getMusics();
         mPlaylist = getIntent().getIntegerArrayListExtra("playlist");
         mCurrentPosition = getIntent().getIntExtra("current_position", 0);
+        int state = getIntent().getIntExtra("state",STATE_START);
         currentSongId = mPlaylist.get(mCurrentPosition);
         setTotalText(currentSongId);
         final Music currentSong = mMusics.get(currentSongId - 1);
@@ -119,7 +122,16 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 //        initWidget();
 //        updateDate(currentSongId);
 //        play();
-        continuePlay();
+        switch (state){
+            case STATE_START:{
+                play();
+                break;
+            }
+            case STATE_CONTINUE:{
+                continuePlay();
+                break;
+            }
+        }
 
 //        initLrc(currentSong);
     }
