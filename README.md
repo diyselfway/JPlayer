@@ -4,6 +4,7 @@
 ### 整体效果
 >![demo](http://7xlo4n.com1.z0.glb.clouddn.com/demo_JPlayer.gif)
 
+### 功能详情
 - 歌曲列表
 >![歌曲列表](http://7xlo4n.com1.z0.glb.clouddn.com/%E6%AD%8C%E6%9B%B2%E5%88%97%E8%A1%A8.jpg)
 
