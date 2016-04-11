@@ -15,6 +15,7 @@
 - 歌词展示（测试中，从歌词迷下载歌词数据并加载在CollapsingToolbar的ExpandedTitle上）
 - 桌面播放控件（测试中）
 
+
 ### 界面详情
 
 - 歌曲列表
