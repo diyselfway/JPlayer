@@ -1,9 +1,3 @@
-## JPlayer 
->一个Material Design 风格的 Android 音乐播放器
-
-### 整体效果
->![demo](http://7xlo4n.com1.z0.glb.clouddn.com/demo_JPlayer.gif)
-
 ## JPlayer （锦瑟）
 >一款 Android 音乐播放器，尝试采用 Material Design 风格设计，力求呈现出简洁大方的用户体验。程序会联网更新专辑及歌手数据，动态收缩或展示次要信息，背景及标题栏会随着专辑封面改变颜色，可滑动切歌，缺省专辑封面会以首字符配上随机鲜亮背景色填充。
 
