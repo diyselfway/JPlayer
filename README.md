@@ -5,7 +5,7 @@
 >![demo](http://7xlo4n.com1.z0.glb.clouddn.com/demo_JPlayer.gif)
 
 ### 功能及特色
-- 联网更新专辑封面及歌手信息（程序会尝试从 Last.fm 下载并更新专辑封面及歌手图片和信息，网络请求使用volley，Json解析使用Gson，图片加载使用Glide）
+- 联网更新专辑封面及歌手信息（程序会尝试从 Last.fm 下载并更新专辑封面及歌手图片和信息，Json解析使用Gson，图片加载使用Glide）
 - 缺省专辑封面填充（缺省专辑封面会以首字符配上随机鲜亮背景色填充）
 - 上划隐藏标题栏同时显示播放控制栏，反之下滑则隐藏播放控制栏显示标题栏（CoordinatorLayout配合AppBarLayout设置layout_scrollFlags及listview设置layout_behavior实现）
 - 专辑信息背景色取专辑封面里的鲜亮色，保证展示效果多彩且和谐（通过palette实现）
