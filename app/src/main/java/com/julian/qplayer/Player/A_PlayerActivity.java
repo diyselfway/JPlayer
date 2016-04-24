@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -38,7 +39,10 @@ import com.julian.qplayer.MusicWidget;
 import com.julian.qplayer.PlayButton;
 import com.julian.qplayer.R;
 import com.julian.qplayer.Utils;
+import com.julian.qplayer.lrc.LrcInfo;
+import com.julian.qplayer.lrc.LrcParser;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -47,17 +51,14 @@ import java.util.ArrayList;
  */
 public class A_PlayerActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private ImageView mAlbumImage;
-    private CollapsingToolbarLayout mCollapsingToolbarLayout;
-
-
+    public static final String TAG = A_PlayerActivity.class.getSimpleName();
     public static final String UPDATE_WIDGET = "com.julian.musicplayer.UPDATE_WIDGET";
     public static final int PROGRESS = 1;
-    public static final String TAG = "A_PlayerActivity";
     public static final int STATE_START = 0;
     public static final int STATE_CONTINUE = 1;
     private int mCurrentPosition = 0;
     private int currentSongId = 1;
+    private boolean isFirstTime = true;
     private PlayButton mPlayButton;
     private ImageButton mButtonLast;
     private ImageButton mButtonNext;
@@ -69,15 +70,15 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     private ViewPager mViewPager;
     private TextView mTextProgressTime;
     private TextView mTextTotalTime;
-    private boolean isFirstTime = true;
-
-
-    private Handler mHandler = new MyHandler();
-
-    private BroadcastReceiver mReceiver = new MyBroadcastReceiver();
+    private ImageView mAlbumImage;
     private ListView mPlaylistView;
-//    private LrcInfo mLrcInfo;
     private ImageView mAlbumImageMask;
+
+    private CollapsingToolbarLayout mCollapsingToolbarLayout;
+    private Handler mHandler = new MyHandler();
+    private BroadcastReceiver mReceiver = new MyBroadcastReceiver();
+    private LrcInfo mLrcInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
         mMusics = MusicDB.getInstance(this).getMusics();
         mPlaylist = getIntent().getIntegerArrayListExtra("playlist");
         mCurrentPosition = getIntent().getIntExtra("current_position", 0);
-        int state = getIntent().getIntExtra("state",STATE_START);
+        int state = getIntent().getIntExtra("state", STATE_START);
         currentSongId = mPlaylist.get(mCurrentPosition);
         setTotalText(currentSongId);
         final Music currentSong = mMusics.get(currentSongId - 1);
@@ -123,12 +124,12 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 //        initWidget();
 //        updateDate(currentSongId);
 //        play();
-        switch (state){
-            case STATE_START:{
+        switch (state) {
+            case STATE_START: {
                 play();
                 break;
             }
-            case STATE_CONTINUE:{
+            case STATE_CONTINUE: {
                 continuePlay();
                 break;
             }
@@ -138,7 +139,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void continuePlay() {
-        Log.d(TAG,"continuePlay");
+        Log.d(TAG, "continuePlay");
 //        mPlayer.reset();
 //        try {
 //            mPlayer.setDataSource(mMusics.get(currentSongId-1).getPath());
@@ -158,21 +159,21 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 
     }
 
-//    private void initLrc(Music currentSong) {
-//        if (currentSong.hasLrc()){
-//            mAlbumImageMask.setVisibility(View.VISIBLE);
-//        }else mAlbumImageMask.setVisibility(View.INVISIBLE);
-//        if (currentSong.hasLrc()){
-//            LrcParser lrcParser = new LrcParser();
-//            String dirPathStr = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + File.separator + "lrcs" + File.separator;
-//            String lrcPath = dirPathStr + currentSong.getName() + ".lrc";
-//            try {
-//                mLrcInfo = lrcParser.parser(lrcPath);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }else mLrcInfo = null;
-//    }
+    private void initLrc(Music currentSong) {
+        if (currentSong.hasLrc()){
+            mAlbumImageMask.setVisibility(View.VISIBLE);
+        }else mAlbumImageMask.setVisibility(View.INVISIBLE);
+        if (currentSong.hasLrc()){
+            LrcParser lrcParser = new LrcParser();
+            String dirPathStr = getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + File.separator + "lrcs" + File.separator;
+            String lrcPath = dirPathStr + currentSong.getName() + ".lrc";
+            try {
+                mLrcInfo = lrcParser.parser(lrcPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else mLrcInfo = null;
+    }
 
     private class MyHandler extends Handler {
 //        WeakReference<A_PlayerActivity> mPlayerActivityWeakReference;
@@ -189,22 +190,22 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 //            SeekBar seekBar = mSeekBar;
 //            TextView textProgressTime =mTextProgressTime;
             Handler handler = mHandler;
-            switch (msg.what){
+            switch (msg.what) {
                 //更新播放进度条
                 case PROGRESS:
                     if (mPlayer != null) {
                         try {
                             mSeekBar.setProgress(mPlayer.getCurrentPosition());
                             int total = mPlayer.getCurrentPosition();
-                            int m = total/1000/60;
+                            int m = total / 1000 / 60;
                             String mm = m + "";
-                            if (m < 10){
+                            if (m < 10) {
                                 mm = "0" + m;
                             }
-                            int s = total/1000%60;
+                            int s = total / 1000 % 60;
                             String ss = s + "";
-                            if (s<10) {
-                                ss = "0"+ s;
+                            if (s < 10) {
+                                ss = "0" + s;
                             }
                             mTextProgressTime.setText(mm + ":" + ss);
 //                            if (mLrcInfo.getLrcs().get((long)(player.getCurrentPosition())/10*10)){
@@ -213,7 +214,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        handler.sendEmptyMessageDelayed(PROGRESS,1000);
+                        handler.sendEmptyMessageDelayed(PROGRESS, 1000);
                     }
                     break;
             }
@@ -221,7 +222,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private class MyBroadcastReceiver extends BroadcastReceiver{
+    private class MyBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -240,60 +241,20 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setAlbumImage(Music song) {
-//        String picPathStr = null;
-//        if (song.hasPicAlbum() || song.hasCover() || song.hasPicArtist()) {
-//            if (song.hasPicArtist()) {
-//                picPathStr = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator + song.getArtist() + ".png";
-//            }else if (song.hasPicAlbum()) {
-//                picPathStr = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
-//            } else if (song.hasCover()) {
-//                picPathStr = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
-//            }
-//            if (picPathStr != null) {
-            //                    FileInputStream fileInputStream = new FileInputStream(picPathStr);
-            Glide.with(this)
-                    .load(MusicDB.getInstance(this).selectPicturePath(song, MusicDB.PREFER_BEST))
+        Glide.with(this)
+                .load(MusicDB.getInstance(this).selectPicturePath(song, MusicDB.PREFER_BEST))
 //                    .bitmapTransform(new BlurTransformation(this))
-                    .asBitmap()
-                    .error(R.drawable.album)
-                    .into(new BitmapImageViewTarget(mAlbumImage) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            super.setResource(resource);
-                            Palette.Swatch swatch = Utils.getSwatch(resource);
-                            mCollapsingToolbarLayout.setContentScrimColor(swatch.getRgb());
-                            mCollapsingToolbarLayout.setStatusBarScrimColor(swatch.getRgb());
-                        }
-                    });
-//                    Bitmap bitmap = MusicDB.getInstance(this).selectPicture(song,MusicDB.PREFER_BEST);
-//                    mAlbumImage.setImageBitmap(bitmap);
-//                    int[] avgColor = Tools.getAverageColor(bitmap, 0.8, 0.1, 0.8);
-//                    int gray = (299 * avgColor[0] + 587 * avgColor[1] + 114 * avgColor[2]) / 1000;
-//                    if (gray > 220) {
-////                        mCollapsingToolbarLayout.setExpandedTitleColor(Color.BLACK);
-//                        mCollapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.colorPrimary));
-//                        mCollapsingToolbarLayout.setStatusBarScrimColor(getResources().getColor(R.color.colorPrimary));
-//                    } else {
-////                        mCollapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
-//                        mCollapsingToolbarLayout.setContentScrimColor(Color.rgb(avgColor[0], avgColor[1], avgColor[2]));
-//                        mCollapsingToolbarLayout.setStatusBarScrimColor(Color.rgb(avgColor[0], avgColor[1], avgColor[2]));
-//                    }
-            //            }
-//        }else {
-////            mAlbumImage.setImageResource(R.drawable.album);
-//            Glide.with(this)
-//                    .load(R.drawable.album)
-//                    .asBitmap()
-//                    .into(new BitmapImageViewTarget(mAlbumImage){
-//                        @Override
-//                        protected void setResource(Bitmap resource) {
-//                            super.setResource(resource);
-//                            Palette.Swatch swatch = Utils.getSwatch(resource);
-//                            mCollapsingToolbarLayout.setContentScrimColor(swatch.getRgb());
-//                            mCollapsingToolbarLayout.setStatusBarScrimColor(swatch.getRgb());
-//                        }
-//                    });
-//        }
+                .asBitmap()
+                .error(R.drawable.album)
+                .into(new BitmapImageViewTarget(mAlbumImage) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        super.setResource(resource);
+                        Palette.Swatch swatch = Utils.getSwatch(resource);
+                        mCollapsingToolbarLayout.setContentScrimColor(swatch.getRgb());
+                        mCollapsingToolbarLayout.setStatusBarScrimColor(swatch.getRgb());
+                    }
+                });
     }
 
     private void findViews() {
@@ -359,9 +320,9 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
                 setAlbumImage(currentSong);
 //                initLrc(currentSong);
                 Log.d(TAG, "onPageSelected");
-                if(isFirstTime){
+                if (isFirstTime) {
                     isFirstTime = false;
-                }else play();
+                } else play();
             }
 
             @Override
@@ -372,17 +333,17 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void setTotalText(int currentSongId) {
-        Music currentSong = mMusics.get(currentSongId-1);
+        Music currentSong = mMusics.get(currentSongId - 1);
         int total = currentSong.getDuration();
-        int m = total/1000/60;
+        int m = total / 1000 / 60;
         String mm = m + "";
-        if (m < 10){
+        if (m < 10) {
             mm = "0" + m;
         }
-        int s = total/1000%60;
+        int s = total / 1000 % 60;
         String ss = s + "";
-        if (s<10) {
-            ss = "0"+ s;
+        if (s < 10) {
+            ss = "0" + s;
         }
         mTextTotalTime.setText(mm + ":" + ss);
     }
@@ -403,10 +364,10 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void play() {
-        Log.d(TAG,"play");
+        Log.d(TAG, "play");
         mPlayer.reset();
         try {
-            mPlayer.setDataSource(mMusics.get(currentSongId-1).getPath());
+            mPlayer.setDataSource(mMusics.get(currentSongId - 1).getPath());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -427,31 +388,32 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
         //更新桌面小插件
         Intent intent_update_widget = new Intent();
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        mmr.setDataSource(mMusics.get(currentSongId-1).getPath());
-        intent_update_widget.putExtra("cover",mmr.getEmbeddedPicture());
-        intent_update_widget.putExtra("title", mMusics.get(currentSongId-1).getName());
-        intent_update_widget.putExtra("isPlaying",mPlayer.isPlaying());
+        mmr.setDataSource(mMusics.get(currentSongId - 1).getPath());
+        intent_update_widget.putExtra("cover", mmr.getEmbeddedPicture());
+        intent_update_widget.putExtra("title", mMusics.get(currentSongId - 1).getName());
+        intent_update_widget.putExtra("isPlaying", mPlayer.isPlaying());
         intent_update_widget.setAction(UPDATE_WIDGET);
         sendBroadcast(intent_update_widget);
     }
 
-    public void lastSong(){
+    public void lastSong() {
         if (mCurrentPosition > 0) {
             mCurrentPosition--;
             currentSongId = mPlaylist.get(mCurrentPosition);
         } else {
-            mCurrentPosition = mPlaylist.size()-1;
+            mCurrentPosition = mPlaylist.size() - 1;
             currentSongId = mPlaylist.get(mCurrentPosition);
         }
         updateDate(currentSongId);
         Log.d(TAG, "lastSong");
         play();
     }
-    public void nextSong(){
-        if (mCurrentPosition < mPlaylist.size()-1) {
+
+    public void nextSong() {
+        if (mCurrentPosition < mPlaylist.size() - 1) {
             mCurrentPosition++;
             currentSongId = mPlaylist.get(mCurrentPosition);
-        } else{
+        } else {
             mCurrentPosition = 0;
             currentSongId = mPlaylist.get(mCurrentPosition);
         }
@@ -460,21 +422,21 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
         play();
     }
 
-    public void updateDate(int currentSongId){
-        Music currentSong =  mMusics.get(currentSongId-1);
+    public void updateDate(int currentSongId) {
+        Music currentSong = mMusics.get(currentSongId - 1);
 //        initLrc(currentSong);
         setAlbumImage(currentSong);
         mViewPager.setCurrentItem(mCurrentPosition);
         int total = currentSong.getDuration();
-        int m = total/1000/60;
+        int m = total / 1000 / 60;
         String mm = m + "";
-        if (m < 10){
+        if (m < 10) {
             mm = "0" + m;
         }
-        int s = total/1000%60;
+        int s = total / 1000 % 60;
         String ss = s + "";
-        if (s<10) {
-            ss = "0"+ s;
+        if (s < 10) {
+            ss = "0" + s;
         }
         mTextTotalTime.setText(mm + ":" + ss);
 //        if (currentSong.hasLrc()){
@@ -490,7 +452,7 @@ public class A_PlayerActivity extends AppCompatActivity implements View.OnClickL
 //        }
     }
 
-    public void changeState(){
+    public void changeState() {
         Log.d(TAG, "mPlayer is null:" + (mPlayer == null));
 //        if(mPlayer == null){
 //            Intent intent = new Intent(A_PlayerActivity.this,MusicService.class);
