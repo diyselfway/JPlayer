@@ -29,6 +29,7 @@ import java.util.Objects;
 
 /**
  * Created by Julian on 2016/3/8.
+ * 音乐数据
  */
 public class MusicDB {
     private static final String TAG = MusicDB.class.getSimpleName();
@@ -93,6 +94,7 @@ public class MusicDB {
             mAlbums.get(i).setTotalTime(totalTime);
             mAlbums.get(i).setYear(mMusics.get(songlist.get(0) - 1).getYear());
         }
+
         //整理歌手数据
         ArrayList<String> artistlist = new ArrayList<>();
         for (Music music : mMusics) {
@@ -133,6 +135,8 @@ public class MusicDB {
         }
 
         initMusicData();
+
+        //下载歌词文件
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
@@ -143,7 +147,6 @@ public class MusicDB {
 
     public static MusicDB getInstance(Context c) {
         appContext = c.getApplicationContext();
-
         if (instance == null) {
             synchronized (MusicDB.class) {
                 if (instance == null) {
@@ -154,20 +157,7 @@ public class MusicDB {
         return instance;
     }
 
-    public ArrayList<Music> getMusics() {
-        return mMusics;
-    }
-
-    public ArrayList<Album> getAlbums() {
-        return mAlbums;
-    }
-
-    public ArrayList<Artist> getArtists() {
-        return mArtists;
-    }
-
     private void initMusicData() {
-
         //获取并保存内置专辑封面
         String dirPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator;
         File dirPath = new File(dirPathStr);
@@ -205,6 +195,19 @@ public class MusicDB {
         initLrc();
     }
 
+    public ArrayList<Music> getMusics() {
+        return mMusics;
+    }
+
+    public ArrayList<Album> getAlbums() {
+        return mAlbums;
+    }
+
+    public ArrayList<Artist> getArtists() {
+        return mArtists;
+    }
+
+    //联网获取歌手信息
     public void getArtistInfo() {
         String urlBase = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=fdb3a51437d4281d4d64964d333531d4&format=json&artist=";
         String dirPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator;
@@ -290,6 +293,7 @@ public class MusicDB {
         }
     }
 
+    //整理歌手信息
     public void initArtistInfo() {
 //        String urlBase = "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&api_key=fdb3a51437d4281d4d64964d333531d4&format=json&artist=";
         String dirPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator;
@@ -376,6 +380,7 @@ public class MusicDB {
         }
     }
 
+    //联网获取专辑信息
     public void getAlbumInfo() {
 //        String urlBase = "http://ws.audioscrobbler.com/2.0/?api_key=87a4fc682c7e61c0b880b798a472ab6f&format=json&autocorrect=1&method=album.getInfo&artist=歌手名&album=专辑名";
         String urlBase = "http://ws.audioscrobbler.com/2.0/?api_key=87a4fc682c7e61c0b880b798a472ab6f&format=json&autocorrect=1&method=album.getInfo";
@@ -447,6 +452,7 @@ public class MusicDB {
         }
     }
 
+    //整理专辑信息
     public void initAlbumInfo() {
 //        String urlBase = "http://ws.audioscrobbler.com/2.0/?api_key=87a4fc682c7e61c0b880b798a472ab6f&format=json&autocorrect=1&method=album.getInfo";
         String dirPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator;
@@ -518,6 +524,7 @@ public class MusicDB {
         }
     }
 
+    //联网下载歌词
     private void downloadLrc() {
 //        String baseUrl = "http://geci.me/api/lyric/浮夸/陈奕迅";
         String baseUrl = "http://geci.me/api/lyric/";
@@ -549,7 +556,7 @@ public class MusicDB {
                         if (lrcJson.getResult() != null) {
                             for (int i = 0; i < lrcJson.getResult().size(); i++) {
                                 String lrcUrl = lrcJson.getResult().get(i).getLrcUrl();
-                                Log.d(TAG,song.getName() + "歌词地址：" + lrcUrl );
+                                Log.d(TAG, song.getName() + "歌词地址：" + lrcUrl);
                                 URL urlLrc = new URL(lrcUrl);
                                 HttpURLConnection connectionLrc = (HttpURLConnection) urlLrc.openConnection();
                                 connectionLrc.setConnectTimeout(30000);
@@ -558,20 +565,20 @@ public class MusicDB {
                                 if (connectionLrc.getResponseCode() == HttpURLConnection.HTTP_OK) {
                                     InputStream inputStreamLrc = connectionLrc.getInputStream();
                                     FileOutputStream fileOutputStreamLrc = new FileOutputStream(lrc);
-                                    byte[] buffer = new byte[1024*4];
+                                    byte[] buffer = new byte[1024 * 4];
                                     while (inputStreamLrc.read(buffer) != -1) {
                                         fileOutputStreamLrc.write(buffer);
                                     }
                                     inputStreamLrc.close();
                                     fileOutputStreamLrc.close();
                                     song.setHasLrc(true);
-                                    Log.d(TAG,song.getName() + "歌词下载并保存成功" );
+                                    Log.d(TAG, song.getName() + "歌词下载并保存成功");
                                     LrcParser lrcParser = new LrcParser();
 //                                    String lrcDirPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) + File.separator + "lrcs" + File.separator;
 //                                    String lrcPathTemp = lrcDirPathStr + song.getName() + ".lrc";
                                     try {
                                         LrcInfo lrcInfo = lrcParser.parser(lrcPath);
-                                        if (lrcInfo==null|lrcInfo.getLrcs().size()<10){
+                                        if (lrcInfo == null | lrcInfo.getLrcs().size() < 10) {
                                             (new File(lrcPath)).delete();
                                             song.setHasLrc(false);
                                             Log.d(TAG, song.getName() + "歌词不满足要求，删除");
@@ -592,6 +599,8 @@ public class MusicDB {
             }
         }
     }
+
+    //整理歌词信息
     private void initLrc() {
 //        String baseUrl = "http://geci.me/api/lyric/浮夸/陈奕迅";
 //        String baseUrl = "http://geci.me/api/lyric/";
@@ -738,144 +747,144 @@ public class MusicDB {
 //        }
 //    }
 
-    public String selectPicturePath(Music song, int prefer){
+    public String selectPicturePath(Music song, int prefer) {
         String targetPicPathStr = "";
-        switch (prefer){
-            case PREFER_ARTIST:{
-                if (song.hasPicArtist()){
-                    targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator +  song.getArtist() + ".png";
-                }else if (song.hasPicAlbum()){
+        switch (prefer) {
+            case PREFER_ARTIST: {
+                if (song.hasPicArtist()) {
+                    targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator + song.getArtist() + ".png";
+                } else if (song.hasPicAlbum()) {
                     targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
-                }else if (song.hasCover()){
+                } else if (song.hasCover()) {
                     targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
                 }
                 break;
             }
-            case PREFER_ALBUM:{
-                 if (song.hasPicAlbum()){
-                     targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
-                }else if (song.hasCover()){
-                     targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
-                }else if (song.hasPicArtist()){
-                     targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator +  song.getArtist() + ".png";
+            case PREFER_ALBUM: {
+                if (song.hasPicAlbum()) {
+                    targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
+                } else if (song.hasCover()) {
+                    targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
+                } else if (song.hasPicArtist()) {
+                    targetPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator + song.getArtist() + ".png";
                 }
                 break;
             }
-            case PREFER_BEST:{
+            case PREFER_BEST: {
                 File file;
                 long sizeArtist = 0;
                 String artistPicPathStr = "";
-                if(song.hasPicArtist()){
-                    artistPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator +  song.getArtist() + ".png";
+                if (song.hasPicArtist()) {
+                    artistPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator + song.getArtist() + ".png";
                     file = new File(artistPicPathStr);
                     sizeArtist = file.getTotalSpace();
                 }
                 long sizeAlbum = 0;
                 String albumPicPathStr = "";
-                if(song.hasPicAlbum()){
+                if (song.hasPicAlbum()) {
                     albumPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
                     file = new File(albumPicPathStr);
                     sizeAlbum = file.getTotalSpace();
                 }
-                String tempPathStr = sizeArtist>sizeAlbum?artistPicPathStr:albumPicPathStr;
-                long tempSize = sizeArtist>sizeAlbum?sizeArtist:sizeAlbum;
+                String tempPathStr = sizeArtist > sizeAlbum ? artistPicPathStr : albumPicPathStr;
+                long tempSize = sizeArtist > sizeAlbum ? sizeArtist : sizeAlbum;
                 long sizeCover = 0;
                 String coverPicPathStr = "";
-                if (song.hasCover()){
+                if (song.hasCover()) {
                     coverPicPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
                     file = new File(coverPicPathStr);
                     sizeCover = file.getTotalSpace();
                 }
-                targetPicPathStr = sizeCover>tempSize?coverPicPathStr:tempPathStr;
+                targetPicPathStr = sizeCover > tempSize ? coverPicPathStr : tempPathStr;
                 break;
             }
         }
         return targetPicPathStr;
     }
 
-    public Bitmap selectPicture(Music song,int prefer) throws FileNotFoundException {
+    public Bitmap selectPicture(Music song, int prefer) throws FileNotFoundException {
         String picPathStr = "";
         Bitmap bitmap = null;
         File file;
-        switch (prefer){
-            case PREFER_ARTIST:{
-                if(song.hasPicArtist()){
-                    picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator +  song.getArtist() + ".png";
+        switch (prefer) {
+            case PREFER_ARTIST: {
+                if (song.hasPicArtist()) {
+                    picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator + song.getArtist() + ".png";
                     FileInputStream fileInputStream = new FileInputStream(picPathStr);
                     bitmap = BitmapFactory.decodeStream(fileInputStream);
                 }
-                if (bitmap == null){
+                if (bitmap == null) {
                     song.setHasPicArtist(false);
                     file = new File(picPathStr);
-                    if (file.exists()){
+                    if (file.exists()) {
                         file.delete();
                     }
                     int sizeAlbum = 0;
                     Bitmap bitmapAlbum = null;
-                    if(song.hasPicAlbum()){
+                    if (song.hasPicAlbum()) {
                         picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
                         FileInputStream fileInputStream = new FileInputStream(picPathStr);
                         bitmapAlbum = BitmapFactory.decodeStream(fileInputStream);
-                        if (bitmapAlbum == null){
+                        if (bitmapAlbum == null) {
                             song.setHasPicAlbum(false);
                             file = new File(picPathStr);
-                            if (file.exists()){
+                            if (file.exists()) {
                                 file.delete();
                             }
-                        }else sizeAlbum = bitmapAlbum.getWidth()*bitmapAlbum.getHeight();
+                        } else sizeAlbum = bitmapAlbum.getWidth() * bitmapAlbum.getHeight();
                     }
                     int sizeCover = 0;
                     Bitmap bitmapCover = null;
-                    if (song.hasCover()){
+                    if (song.hasCover()) {
                         picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
                         FileInputStream fileInputStream = new FileInputStream(picPathStr);
                         bitmapCover = BitmapFactory.decodeStream(fileInputStream);
-                        if (bitmapCover == null){
+                        if (bitmapCover == null) {
                             song.setHasCover(false);
                             file = new File(picPathStr);
-                            if (file.exists()){
+                            if (file.exists()) {
                                 file.delete();
                             }
-                        }else sizeCover = bitmapCover.getWidth()*bitmapCover.getHeight();
+                        } else sizeCover = bitmapCover.getWidth() * bitmapCover.getHeight();
                     }
-                    bitmap = sizeAlbum>sizeCover?bitmapAlbum:bitmapCover;
+                    bitmap = sizeAlbum > sizeCover ? bitmapAlbum : bitmapCover;
                 }
                 break;
             }
-            case PREFER_ALBUM:{
-                if (song.hasPicAlbum()|song.hasCover()){
+            case PREFER_ALBUM: {
+                if (song.hasPicAlbum() | song.hasCover()) {
                     long sizeAlbum = 0;
                     Bitmap bitmapAlbum = null;
-                    if(song.hasPicAlbum()){
+                    if (song.hasPicAlbum()) {
                         picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
                         FileInputStream fileInputStream = new FileInputStream(picPathStr);
                         bitmapAlbum = BitmapFactory.decodeStream(fileInputStream);
-                        if (bitmapAlbum == null){
+                        if (bitmapAlbum == null) {
                             song.setHasPicAlbum(false);
                             file = new File(picPathStr);
-                            if (file.exists()){
+                            if (file.exists()) {
                                 file.delete();
                             }
-                        }else sizeAlbum = bitmapAlbum.getWidth()*bitmapAlbum.getHeight();
+                        } else sizeAlbum = bitmapAlbum.getWidth() * bitmapAlbum.getHeight();
                     }
                     long sizeCover = 0;
                     Bitmap bitmapCover = null;
-                    if (song.hasCover()){
+                    if (song.hasCover()) {
                         picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
                         FileInputStream fileInputStream = new FileInputStream(picPathStr);
                         bitmapCover = BitmapFactory.decodeStream(fileInputStream);
-                        if (bitmapCover == null){
+                        if (bitmapCover == null) {
                             song.setHasCover(false);
                             file = new File(picPathStr);
-                            if (file.exists()){
+                            if (file.exists()) {
                                 file.delete();
                             }
-                        }else sizeCover = bitmapCover.getWidth()*bitmapCover.getHeight();
+                        } else sizeCover = bitmapCover.getWidth() * bitmapCover.getHeight();
                     }
-                    bitmap = sizeAlbum>sizeCover?bitmapAlbum:bitmapCover;
+                    bitmap = sizeAlbum > sizeCover ? bitmapAlbum : bitmapCover;
                 }
-                if (bitmap == null && song.hasPicArtist()){
-                    picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator +  song.getArtist() + ".png";
+                if (bitmap == null && song.hasPicArtist()) {
+                    picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator + song.getArtist() + ".png";
                     FileInputStream fileInputStream = new FileInputStream(picPathStr);
                     bitmap = BitmapFactory.decodeStream(fileInputStream);
                     if (bitmap == null) {
@@ -888,55 +897,55 @@ public class MusicDB {
                 }
                 break;
             }
-            case PREFER_BEST:{
+            case PREFER_BEST: {
                 long sizeArtist = 0;
                 Bitmap bitmapArtist = null;
-                if(song.hasPicArtist()){
-                    picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator +  song.getArtist() + ".png";
+                if (song.hasPicArtist()) {
+                    picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "artists" + File.separator + song.getArtist() + ".png";
                     FileInputStream fileInputStream = new FileInputStream(picPathStr);
                     bitmapArtist = BitmapFactory.decodeStream(fileInputStream);
-                    if (bitmapArtist == null){
+                    if (bitmapArtist == null) {
                         song.setHasPicAlbum(false);
                         file = new File(picPathStr);
-                        if (file.exists()){
+                        if (file.exists()) {
                             file.delete();
                         }
-                    }else sizeArtist = bitmapArtist.getWidth()*bitmapArtist.getHeight();
+                    } else sizeArtist = bitmapArtist.getWidth() * bitmapArtist.getHeight();
                 }
                 long sizeAlbum = 0;
                 Bitmap bitmapAlbum = null;
-                if(song.hasPicAlbum()){
+                if (song.hasPicAlbum()) {
                     picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "albums" + File.separator + song.getAlbum() + ".png";
                     FileInputStream fileInputStream = new FileInputStream(picPathStr);
                     bitmapAlbum = BitmapFactory.decodeStream(fileInputStream);
-                    if (bitmapAlbum == null){
+                    if (bitmapAlbum == null) {
                         song.setHasPicAlbum(false);
                         file = new File(picPathStr);
-                        if (file.exists()){
+                        if (file.exists()) {
                             file.delete();
                         }
-                    }else sizeAlbum = bitmapAlbum.getWidth()*bitmapAlbum.getHeight();
+                    } else sizeAlbum = bitmapAlbum.getWidth() * bitmapAlbum.getHeight();
                 }
-                Bitmap bitmapTemp = sizeArtist>sizeAlbum?bitmapArtist:bitmapAlbum;
+                Bitmap bitmapTemp = sizeArtist > sizeAlbum ? bitmapArtist : bitmapAlbum;
                 long sizeTemp = 0;
-                if (bitmapTemp != null){
-                    sizeTemp = bitmapTemp.getWidth()*bitmapTemp.getHeight();
+                if (bitmapTemp != null) {
+                    sizeTemp = bitmapTemp.getWidth() * bitmapTemp.getHeight();
                 }
                 long sizeCover = 0;
                 Bitmap bitmapCover = null;
-                if (song.hasCover()){
+                if (song.hasCover()) {
                     picPathStr = appContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + File.separator + "covers" + File.separator + song.getAlbum() + ".png";
                     FileInputStream fileInputStream = new FileInputStream(picPathStr);
                     bitmapCover = BitmapFactory.decodeStream(fileInputStream);
-                    if (bitmapCover == null){
+                    if (bitmapCover == null) {
                         song.setHasCover(false);
                         file = new File(picPathStr);
-                        if (file.exists()){
+                        if (file.exists()) {
                             file.delete();
                         }
-                    }else sizeCover = bitmapCover.getWidth()*bitmapCover.getHeight();
+                    } else sizeCover = bitmapCover.getWidth() * bitmapCover.getHeight();
                 }
-                bitmap = sizeCover>sizeTemp?bitmapCover:bitmapTemp;
+                bitmap = sizeCover > sizeTemp ? bitmapCover : bitmapTemp;
                 break;
             }
         }
